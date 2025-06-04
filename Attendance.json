@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "valiant-lambda-461306-t3",
+  "private_key_id": "cf575eae86c347a5ba2e206118aa5bec2e58b809",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCpFpy1UtqFCuFl\nqkTmGNGHP1F0YTejVDFSaJOSUlEg6k14JmJBhLMHEJokWwWbHMOKXsGepzMKUZCU\n9DCZCOxv+PO/u/yxRKt18EyhvHFgQnRQ5euIKe847UY/hIYsacwKOqwqDQW8f+wW\nWlvgQ2Z+lNR0XGY2QJGWlOmobRr9YhxERCqFMX+zcakrX6QFa+Yr/G3rMeHEKVqM\n86nsoT+YZX2gPMddKTgiH2ZDAwUeK0lPnEcoCOg+MKmW2Ff2KQPsNpJum1f702ID\nbKV4eleIJwMZAvGN1P3ZiJmAIDfuuyx1ZzpSQUT7DPtaajbsOQocphEFXfiepfMz\n5BYsB3KZAgMBAAECggEAAYCUqegazmH4vzeTYPTLMtTMzUKizIddSeAtNzxD0MoF\nERB5xJfH9paqFZMEZMNCCsmWrJ4W6HEAqd/GWivWviqkJ/5/MdzSAFawIIzLvAQO\n5bwLVGbP6xYeeEaleErIOPo4S4oN50HsDQW7QtN+8dSqvMpGbZ1g82eSh0mj7aiq\nByWp/9SFTkXxSsooHHAayH/4TwDXhvbYqLvC92XqB85+KYFg+NaF65H7XttLr9r3\naWL9eVGOSLc4ESg/EV7Hu8mogbfm8ZLs8DwJEOlSukFa3T/4oCg67As/4i8DNNjn\nbeyfdCwaxCGpSjfJEOtAcc4Olkn0hKM7TtNoWpi52wKBgQDsdJliGJ5KGWW2hBa6\nIGZQ166t9j6ta33GZu2K/30J5Z+CDc8SXWcRFMn+fZsWIfTDtbKw5T/cMykd4HFq\njOayKL+DKojrY/oez6bYoeHBd+V69mC9QXMNJyrVqbXigwMFSFOXx1ZKnOjavjJC\nfPKSifB4r/bZYWmDHXgVlibJOwKBgQC3EIYBtkza93ggupZ66nLYgADkoPJ0OLHz\niH3QrHxoC8t3Y7c+erX8szGwfWjH4R6FPTMi9ZyLVdkt5iLCIXeGT+hCeefzjeJs\n4wqawMcrCSwT93Af413boKpgMV4mJ268r2NHxxmiml412EBJeKPWyW8JtHsObTRk\nhxMf1qQWOwKBgQDoLwJiSew8tL2kwAWVFLWDUparKa6YGYHyrSU6JPBCJKFBUo/v\n55mKM1C5vdrom8U93BAwFZxkfDQ2qyqTRvJNJSgRA1ZZVd3IHX0nIaaNlE7ZNE7/\n5+Gym7A7CB+a4ay4pjG3SzzXnUYlbTfrA8gpzps71wXcpQO3hNtizwMc+wKBgBMd\nU5C8Mzwt2Mo6EVpWPpWij/VPZOGDxfjyyIhQalEG4kDeFZUdhQEUyNxvy9ALDn/F\nCyDcWnMmDJ5BSGHS0sMgdtTyG6kPqJPMBSBxfppcw9B15qw9tmAnX4LZxMXhGivz\neD9XZ7LVwX6HzPae9SSJNeHiiXLRLkZM4E9TvyBfAoGBAMbfO+HbLtBurvRJB3zK\npCOzVFjdV+M5umNwv2aEgVsz16zcT6oR5ypHJIuvoEic2Y/9cWj5h6vLtq1QqVjm\nvmCp6lvxX/bkzW57g4ce2ue/RMm4N+2l7e/zdVbMOtgT2thM+FUI0o1hb/JDb8zo\n/0ZrRzDMHJJIJBXqKR2VvGGX\n-----END PRIVATE KEY-----\n",
+  "client_email": "attendance@valiant-lambda-461306-t3.iam.gserviceaccount.com",
+  "client_id": "103233110110639037625",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/attendance%40valiant-lambda-461306-t3.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
