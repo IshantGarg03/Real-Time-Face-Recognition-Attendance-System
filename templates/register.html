@@ -3,26 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <title>Register Face</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .container {
+      text-align: center;
+      padding: 150px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    video {
+      border: 2px solid #333;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      width: 100%;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    .alert {
+      font-size: 18px;
+      margin: 10px;
+    }
+    .alert-success { color: green; }
+    .alert-danger { color: red; }
+    .alert-info { color: blue; }
+  </style>
 </head>
 <body>
-  <div class="container center">
-    <h2>Register New User</h2>
+  <div class="container">
+    <h2>Register New Face</h2>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="flash {{ category }}">{{ message }}</div>
+          <p class="alert alert-{{ category }}">{{ message }}</p>
         {% endfor %}
       {% endif %}
     {% endwith %}
-    <form method="POST" class="form-style">
-      <input type="text" name="name" placeholder="Enter your name" required>
-      <button type="submit" class="btn">Start Registration</button>
+    <form id="register-form" method="POST" action="{{ url_for('register') }}">
+      <input type="text" name="name" id="name" placeholder="Enter name" required autofocus>
+      <button type="submit">Start Registration</button>
     </form>
-    <div class="video-wrapper">
-      <img src="{{ url_for('video_feed_register') }}" alt="Registration Video Feed" />
-    </div>
-    <a href="/" class="btn back">Back to Home</a>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="status" class="alert"></div>
+    <a href="/" class="btn">Back to Home</a>
   </div>
+
+  <script>
+    const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const statusDiv = document.getElementById('status');
+const form = document.getElementById('register-form');
+let stream = null;
+let intervalId = null;
+
+async function startWebcam() {
+  try {
+    // Try different constraints to avoid timeout
+    const constraints = [
+      { video: true },
+      { video: { width: 640, height: 480 } },
+      { video: { facingMode: 'user' } }
+    ];
+    let lastError = null;
+    for (const constraint of constraints) {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraint);
+        video.srcObject = stream;
+        return true;
+      } catch (err) {
+        lastError = err;
+        console.warn(`Failed with constraint ${JSON.stringify(constraint)}: ${err.message}`);
+      }
+    }
+    throw lastError || new Error('No webcam configuration worked');
+  } catch (err) {
+    statusDiv.className = 'alert alert-danger';
+    statusDiv.textContent = 'Camera access error: ' + err.message;
+    console.error('Webcam error:', err);
+    return false;
+  }
+}
+
+function stopWebcam() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+async function sendFrame() {
+  if (!video.srcObject) return;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  const imageData = canvas.toDataURL('image/jpeg', 0.8); // Reduce quality to improve performance
+
+  try {
+    const response = await fetch('/process_register_frame', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: imageData, name: document.getElementById('name').value })
+    });
+    const data = await response.json();
+    statusDiv.className = `alert alert-${data.status}`;
+    statusDiv.textContent = data.message;
+
+    if (data.complete) {
+      stopWebcam();
+      setTimeout(() => window.location.href = '/', 3000); 
+    }
+  } catch (err) {
+    statusDiv.className = 'alert alert-danger';
+    statusDiv.textContent = 'Error sending frame: ' + err.message;
+  }
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  if (!name) {
+    statusDiv.className = 'alert alert-danger';
+    statusDiv.textContent = 'Please enter a valid name.';
+    return;
+  }
+
+  try {
+    const response = await fetch('/start_registration', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    });
+    const data = await response.json();
+    if (data.status === 'success') {
+      if (await startWebcam()) {
+        statusDiv.className = 'alert alert-info';
+        statusDiv.textContent = 'Capturing face samples... Please look at the camera.';
+        intervalId = setInterval(sendFrame, 1000); // Increased interval to 1s
+      } else {
+        statusDiv.className = 'alert alert-danger';
+        statusDiv.textContent = 'Failed to start webcam.';
+      }
+    } else {
+      statusDiv.className = 'alert alert-danger';
+      statusDiv.textContent = data.message;
+      stopWebcam();
+    }
+  } catch (err) {
+    statusDiv.className = 'alert alert-danger';
+    statusDiv.textContent = 'Error starting registration: ' + err.message;
+  }
+});
+
+window.addEventListener('beforeunload', stopWebcam);
+
+// Check if getUserMedia is supported
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  statusDiv.className = 'alert alert-danger';
+  statusDiv.textContent = 'Webcam not supported in this browser.'; 
+} 
+  </script>
+  <footer class = "fooetr">
+    <p>&copy; 2025 Face Recognition Attendance System. All rights reserved. </p>
+  </footer> 
 </body>
 </html> 
