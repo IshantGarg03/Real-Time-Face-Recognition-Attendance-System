@@ -3,15 +3,391 @@
 <head>
   <meta charset="UTF-8">
   <title>Mark Attendance</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f8ff;
+      color: #003366;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: white;
+      padding: 40px;  
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 51, 102, 0.1);
+      text-align: center;
+      max-width: 700px;
+      width: 90%;
+    }
+    h2 {
+      color: #004080;
+      font-size: 26px;
+      margin-bottom: 30px;
+    }
+    video, img {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+      border: 3px solid #3399ff;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      color: white;
+      background-color: #007BFF;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .alert {
+      font-size: 18px;
+      margin: 10px;
+    }
+    .alert-success { color: green; }
+    .alert-error { color: red; }
+    .alert-info { color: #004080; }
+    footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    .fallback {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container center">
+  <div class="container">
     <h2>Face Recognition Attendance</h2>
-    <div class="video-wrapper">
-      <img src="{{ url_for('video_feed_attendance') }}" alt="Attendance Video Feed" />
+    <div id="status" class="alert"></div>
+    <video id="video" autoplay playsinline style="display: none;"></video>
+    <img id="preview" style="display: none;">
+    <canvas id="canvas" style="display: none;"></canvas>
+    <button id="mark-attendance" class="btn">Mark Attendance</button>
+    <div class="fallback" id="fallback" style="display: none;">
+      <p>Unable to access camera. Please upload an image instead:</p>
+      <input type="file" id="imageUpload" accept="image/*">
     </div>
-    <a href="/" class="btn back">Back to Home</a>
+    <a href="/" class="btn">Back to Home</a>
   </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const preview = document.getElementById('preview');
+    const canvas = document.getElementById('canvas');
+    const statusDiv = document.getElementById('status');
+    const markButton = document.getElementById('mark-attendance');
+    const fallbackDiv = document.getElementById('fallback');
+    const imageUpload = document.getElementById('imageUpload');
+    let stream = null;
+    let isProcessing = false;
+    let hasAttemptedAttendance = false;
+    const MAX_ATTEMPTS = 3;
+    const ATTEMPT_DELAY = 3000;
+
+    function checkProtocol() {
+      const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const isHttps = window.location.protocol === "https:";
+      if (!isLocalhost && !isHttps) {
+        statusDiv.className = 'alert alert-error';
+        statusDiv.textContent = 'Camera access requires HTTPS or localhost. Please run the app on http://127.0.0.1:5000 or set up HTTPS.';
+        markButton.disabled = true;
+        return false;
+      }
+      return true;
+    }
+
+    async function startWebcam() {
+      console.log("Attempting to start webcam...");
+      try {
+        // Check available video devices
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (videoDevices.length === 0) {
+          throw new Error('No camera found. Please ensure a camera is connected and not in use by another application.');
+        }
+        console.log("Available video devices:", videoDevices);
+
+        // Try constraints with deviceId if available
+        const constraints = [
+          { video: { deviceId: videoDevices[0].deviceId } }, // Use first available device
+          { video: true },
+          { video: { width: 640, height: 480 } }, // Reduced resolution to minimize initialization issues
+          { video: { width: 320, height: 240 } },
+          { video: { facingMode: 'user' } },
+          { video: { facingMode: 'environment' } }
+        ];
+        let lastError = null;
+        const maxRetries = 2; // Retry up to 2 times on timeout
+        for (let retry = 0; retry <= maxRetries; retry++) {
+          for (const constraint of constraints) {
+            try {
+              console.log(`Attempt ${retry + 1}/${maxRetries + 1} - Trying constraint: ${JSON.stringify(constraint)}`);
+              stream = await navigator.mediaDevices.getUserMedia(constraint);
+              console.log("Webcam stream acquired successfully.");
+              video.srcObject = stream;
+              video.style.display = 'block';
+              preview.style.display = 'none';
+              await new Promise((resolve, reject) => {
+                video.onloadedmetadata = () => {
+                  console.log("Video metadata loaded, attempting to play video...");
+                  video.play().then(() => {
+                    console.log("Video playback started successfully.");
+                    resolve();
+                  }).catch(err => {
+                    console.error("Failed to play video:", err);
+                    reject(err);
+                  });
+                };
+                video.onerror = () => {
+                  const errorMsg = "Video element error occurred.";
+                  console.error(errorMsg);
+                  reject(new Error(errorMsg));
+                };
+                setTimeout(() => {
+                  if (!video.srcObject) {
+                    const errorMsg = "Video metadata failed to load within 10 seconds.";
+                    console.error(errorMsg);
+                    reject(new Error(errorMsg));
+                  }
+                }, 10000); // Increased timeout to 10 seconds
+              });
+              console.log("Webcam started successfully.");
+              return true;
+            } catch (err) {
+              lastError = err;
+              console.warn(`Failed with constraint ${JSON.stringify(constraint)}: ${err.message}`);
+              if (err.name === 'AbortError' && retry < maxRetries) {
+                console.log("AbortError detected, retrying after delay...");
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retrying
+              } else {
+                throw err; // Throw the error if not retryable or max retries reached
+              }
+            }
+          }
+        }
+        throw lastError || new Error('No webcam configuration worked');
+      } catch (err) {
+        statusDiv.className = 'alert alert-error';
+        let errorMessage = 'Camera access error: ' + err.message;
+        if (err.name === 'NotAllowedError') {
+          errorMessage = 'Camera access denied. Please allow camera permissions in your browser settings and refresh the page.';
+        } else if (err.name === 'NotFoundError') {
+          errorMessage = 'No camera found. Please ensure a camera is connected and not in use by another application.';
+        } else if (err.name === 'NotReadableError') {
+          errorMessage = 'Camera is in use by another application. Please close other apps using the camera and try again.';
+        } else if (err.name === 'AbortError') {
+          errorMessage = 'Camera timed out. Please ensure the camera is working, update your drivers, and try again.';
+        }
+        statusDiv.textContent = errorMessage;
+        console.error('Webcam error:', err);
+        fallbackDiv.style.display = 'block';
+        return false;
+      }
+    }
+
+    function stopWebcam() {
+      console.log("Stopping webcam...");
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        stream = null;
+      }
+      video.style.display = 'none';
+      preview.style.display = 'none';
+      isProcessing = false;
+      hasAttemptedAttendance = false;
+      console.log("Webcam stopped.");
+    }
+
+    async function processImage(image) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const imageData = canvas.toDataURL('image/jpeg', 1.0);
+          console.log("Processed image base64:", imageData.substring(0, 100) + "...");
+          if (!imageData.startsWith('data:image/jpeg;base64,') || imageData.length < 100) {
+            console.error("Invalid base64 string captured:", imageData.substring(0, 100));
+            statusDiv.className = 'alert alert-error';
+            statusDiv.textContent = 'Failed to process the uploaded image. Please try again.';
+            resolve(null);
+          } else {
+            resolve(imageData);
+          }
+        };
+        img.onerror = () => {
+          console.error("Failed to load uploaded image.");
+          statusDiv.className = 'alert alert-error';
+          statusDiv.textContent = 'Failed to load the uploaded image. Please try again.';
+          resolve(null);
+        };
+        img.src = image;
+      });
+    }
+
+    async function sendFrame(attempt = 1, imageData = null) {
+      if (isProcessing || hasAttemptedAttendance || attempt > MAX_ATTEMPTS) {
+        if (attempt > MAX_ATTEMPTS) {
+          statusDiv.className = 'alert alert-error';
+          statusDiv.textContent = 'Max attempts reached. Please try again.';
+          stopWebcam();
+          markButton.disabled = false;
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        }
+        return;
+      }
+
+      isProcessing = true;
+      hasAttemptedAttendance = true;
+      console.log(`Attempt ${attempt}/${MAX_ATTEMPTS}: Sending frame...`);
+
+      let finalImageData = imageData;
+      if (!imageData) {
+        if (!video.srcObject || video.readyState !== video.HAVE_ENOUGH_DATA) {
+          console.log("Video not ready, retrying...");
+          setTimeout(() => {
+            isProcessing = false;
+            sendFrame(attempt + 1);
+          }, ATTEMPT_DELAY);
+          return;
+        }
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        finalImageData = canvas.toDataURL('image/jpeg', 1.0);
+        console.log("Captured base64 image:", finalImageData.substring(0, 100) + "...");
+      }
+
+      if (!finalImageData) {
+        stopWebcam();
+        markButton.disabled = false;
+        return;
+      }
+
+      try {
+        const response = await fetch('/process_attendance_frame', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: finalImageData })
+        });
+        const data = await response.json();
+        statusDiv.className = `alert alert-${data.status}`;
+        statusDiv.textContent = data.message;
+
+        if (data.complete) {
+          stopWebcam();
+          markButton.disabled = false;
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
+        } else if (attempt < MAX_ATTEMPTS && !imageData) {
+          console.log("Face not detected, retrying...");
+          setTimeout(() => {
+            isProcessing = false;
+            sendFrame(attempt + 1);
+          }, ATTEMPT_DELAY);
+        } else {
+          statusDiv.className = 'alert alert-error';
+          statusDiv.textContent = 'Max attempts reached or image processed. Please try again.';
+          stopWebcam();
+          markButton.disabled = false;
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        } 
+      } catch (err) {
+        statusDiv.className = 'alert alert-error';
+        statusDiv.textContent = 'Error sending frame: ' + err.message;
+        console.error('Error:', err);
+        stopWebcam();
+        markButton.disabled = false;
+      }
+    }
+
+    markButton.addEventListener('click', async () => {
+      if (!checkProtocol()) return;
+
+      if (hasAttemptedAttendance) {
+        statusDiv.className = 'alert alert-info';
+        statusDiv.textContent = 'Attendance attempt already in progress or completed.';
+        return;
+      }
+
+      markButton.disabled = true;
+      statusDiv.textContent = '';
+      hasAttemptedAttendance = false;
+      console.log("Mark Attendance button clicked.");
+      if (await startWebcam()) {
+        statusDiv.className = 'alert alert-info';
+        statusDiv.textContent = 'Processing attendance... Please look at the camera.';
+        setTimeout(() => {
+          sendFrame(1);
+        }, 1000);
+      } else {
+        markButton.disabled = false;
+        console.log("Failed to start webcam, button re-enabled."); 
+      }
+    });
+
+    imageUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      markButton.disabled = true;
+      statusDiv.className = 'alert alert-info';
+      statusDiv.textContent = 'Processing uploaded image...';
+
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        preview.src = event.target.result;
+        preview.style.display = 'block';
+        video.style.display = 'none';
+        const imageData = await processImage(event.target.result);
+        if (imageData) {
+          await sendFrame(1, imageData);
+        } else {
+          markButton.disabled = false;
+        }
+      };
+      reader.onerror = () => {
+        statusDiv.className = 'alert alert-error';
+        statusDiv.textContent = 'Failed to read the uploaded file. Please try again.';
+        markButton.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    window.addEventListener('beforeunload', stopWebcam);
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      statusDiv.className = 'alert alert-error';
+      statusDiv.textContent = 'Webcam not supported in this browser. Please use the file upload option below.';
+      markButton.style.display = 'none';
+      fallbackDiv.style.display = 'block';
+      console.error("Browser does not support navigator.mediaDevices.getUserMedia.");
+    } else {
+      checkProtocol();
+    }
+  </script>
+  <footer class="footer">
+    <p>© 2025 Face Recognition Attendance System. All rights reserved.</p>
+  </footer>
 </body>
-</html> 
+</html>   
