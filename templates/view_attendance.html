@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  
+</head>
+<body class ="view-attendance">
+  <div class="container">
+    <h1>View Attendance Records</h1> 
+    <form method="get" action="{{ url_for('view_attendance') }}">
+      <label for="person_select">Select Person:</label>
+      <select name="person_id" id="person_select" onchange="this.form.submit()">
+        <option value="">-- Select --</option>
+        {% for person in persons %}
+          <option value="{{ person['id'] }}" {% if selected_person_id and selected_person_id == person['id'] | string %}selected{% endif %}>
+            {{ person['name'] }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+
+    {% set selected_person = persons | selectattr('id', 'equalto', selected_person_id | int) | first %}
+    {% if selected_person %}
+      <h2>Attendance for {{ selected_person.name }}</h2>
+    {% endif %}
+
+    {% if attendance_records %}
+      <table>
+        <thead>
+          <tr>
+            <th>Check In Time</th>
+            <th>Check Out Time</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in attendance_records %}
+            <tr>
+              <td>{{ record['check_in_time'] }}</td>
+              <td>{{ record['check_out_time'] or '-' }}</td>
+              <td>{{ record['check_in_location'] or 'Office' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% elif selected_person_id %}
+      <p>No attendance records found for selected person.</p> 
+    {% endif %}
+    <a href="/" class="btn">Back to Home</a>
+  </div>
+  <footer class="footer">
+    <p>&copy; 2025 Face Recognition Attendance System. All rights reserved.</p> 
+  </footer> 
+</body>
+</html> 
