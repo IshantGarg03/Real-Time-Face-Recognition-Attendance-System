@@ -1,98 +1,626 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f4f6f8;
-  margin: 0;
-  padding: 0;
-}
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('lovepik-face-technology-background-image_400082172\ \(1).jpg'); 
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed; 
+    background-position: center;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+     
+  .container {
+    padding: 35px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: base;
+  }
 
-.container {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 40px;
-  background: #ffffff;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  text-align: center;
-}
+  .company-logo {
+    height: 115px;
+    width: 300px;
+    margin-right: 60px;
+  } 
 
-.center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  .logo-name-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centers the content horizontally */
+    gap: 15px; /* space between logo and text */
+    margin-bottom: -118px;
+    margin-top: -133px;
 }
-
-h1, h2 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-}
-
-.button-group {
-  display: flex;
-  gap: 20px;
-}
+  
+  .title {
+    color: #f0d58c;
+    font-size: 70px;
+    text-align: center;
+    margin-bottom: 65px;
+  }
+  
+  .main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .left-text {
+    text-align: left;
+    width: 50%;
+  }
+  
+  .welcome {
+    font-size: 30px;
+    color:white;
+  }
+  
+  .face-text { 
+    font-size: 100px;
+    color: #66ccff;
+    margin: 20px 55px;
+  }
+  
+  .face-text span {
+    display: block;
+    font-size: 35px;
+    color: #7cd1ff;
+    letter-spacing: 2px;
+  }
+  
+  .get-started {
+    font-size: 35px;
+    color: white;
+    margin: 20px 55px;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 100px 0;
+  }
+  
+  button {
+    background-color: #2b8bc6;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 3px 3px 5px 2px #000000;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: #3fa6e0;
+    transform: translateY(-2px);
+  }
+/*help*/
 
 .btn {
-  background: #2980b9;
+  background-color: #2b8bc6;
   color: white;
-  padding: 12px 25px;
-  text-decoration: none;
+  padding: 12px 20px;
   border: none;
-  border-radius: 8px;
-  transition: background 0.3s;
-  font-size: 16px;
+  border-radius: 100px;
+  font-size: 20px;
   cursor: pointer;
-}
-
-.btn:hover {
-  background: #3498db;
-}
-
-.back {
-  margin-top: 20px;
-  background-color: #7f8c8d;
-}
-
-.form-style input {
-  padding: 10px;
-  width: 60%;
-  font-size: 16px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.form-style button {
-  width: 40%;
-}
-
-.video-wrapper img {
-  margin-top: 20px;
-  width: 100%;
-  max-width: 600px;
-  border: 2px solid #2980b9;
-  border-radius: 10px;
-}
-
-.flash {
-  padding: 10px;
-  margin: 10px auto;
-  width: 80%;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.flash.success {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.flash.warning {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.flash.danger {
-  background-color: #f8d7da;
-  color: #721c24;
+  box-shadow: 3px 3px 5px 2px #000000;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none; /* removes underline from <a> */
+  display: inline-block;
+  text-align: center;
 } 
+ 
+.btn:hover {
+  background-color: #3fa6e0;
+  transform: translateY(-2px);
+}
+
+/*help page css */
+
+.intro-text {
+  font-size:4.1rem;
+  margin-bottom: 20px;
+  color: #2B8BC5; 
+  text-decoration: underline;
+}
+ 
+.register-step {
+  font-size:40px;
+}
+ 
+.attendance-step {
+  font-size:40px;
+}
+ 
+.view-step {
+  font-size:40px;
+}
+  
+  /* extra css- view attendance */
+/* === Full Page Background Image with scroll === */
+
+body.view-attendance {
+
+  font-family: 'Segoe UI', sans-serif;
+
+  background-image: url("/static/lovepik-face-technology-background-image_400082172%20(1).jpg");
+
+  background-repeat: no-repeat;
+
+  background-size: cover;
+
+  background-attachment: fixed; /* <-- this is key */
+
+  background-position: center;
+
+  color: #66ccff  ;
+
+  margin: 0;
+
+  padding: 0px 0;
+
+  min-height: 100%;
+
+}
+ 
+/* === Container inside view-attendance page === */
+
+.view-attendance .container {
+
+  background-color: rgb(154 170 187 / 59%);
+
+  padding: 0px;
+
+  border-radius: 50px;
+
+  box-shadow: 0 4px 20px 20px rgba(10, 10, 10, .4);
+
+  text-align: center;
+
+  max-width: 800px;
+
+  width: 90%;
+
+  margin: 135px auto;
+
+}
+ 
+/* Heading styling */
+
+.view-attendance h1,
+
+.view-attendance h2 {
+
+  color: #66ccff;
+  font-size: 50px;
+
+}
+ 
+/* Table styling */
+
+.view-attendance table {
+
+  border-collapse: collapse;
+
+  width: 100%;
+
+  margin-top: 20px;
+
+  color: white;
+
+}
+ 
+.view-attendance th, .view-attendance td {
+
+  border: 1px solid #ddd;
+
+  padding: 12px;
+
+  text-align: center;
+
+}
+ 
+.view-attendance th {
+
+  background-color: #2b8bc6;
+
+  color: white;
+
+}
+ 
+.view-attendance td {
+
+  background-color: rgba(255, 255, 255, 0.1);
+
+}
+ 
+/* Button */
+
+.view-attendance .btn {
+
+  display: inline-block;
+
+  padding: 12px 24px;
+
+  font-size: 20px;
+
+  color: white;
+
+  background-color: #007BFF;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  margin-top: 40px;
+
+}
+ 
+.view-attendance .btn:hover {
+
+  background-color: #0056b3;
+
+} 
+
+/* Label for "Select Person" */
+.view-attendance label[for="person_select"] {
+  font-size: 20px;        /* change size as needed */
+  font-weight: bold;
+  color: #ffffff;         /* white text or any color */
+  margin-bottom: 10px;
+  display: inline-block;
+}
+ 
+/* Select dropdown */
+.view-attendance select#person_select {
+  font-size: 16px;
+    padding: 15px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    color: #003366;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 28%;
+    max-width: 300px;
+}
+
+
+
+/*Media Queries for responsiveness */
+
+/* Small screens (up to 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+ 
+    .title {
+        font-size: 2rem;
+    }
+ 
+    .face-text {
+        font-size: 3rem;
+        margin: 1rem 0;
+    }
+ 
+    .face-text span {
+        font-size: 1.5rem;
+    }
+ 
+    .get-started {
+        font-size: 1.5rem;
+        margin: 1rem 0;
+    }
+ 
+    .intro-text {
+        font-size: 2rem;
+    }
+ 
+    .register-step, .attendance-step, .view-step {
+        font-size: 1.5rem;
+    }
+ 
+    .logo-name-container {
+        flex-direction: column;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+ 
+    .company-logo {
+        margin-right: 0;
+        height: 80px;
+        width: 200px;
+    }
+ 
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+    }
+ 
+    .left-text {
+        max-width: 100%;
+        text-align: center;
+    }
+ 
+    .buttons {
+        padding: 2rem 0;
+        gap: 1rem;
+    }
+ 
+    button, .btn {
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+    }
+ 
+    .view-attendance .container {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+ 
+    .view-attendance h1, .view-attendance h2 {
+        font-size: 1.8rem;
+    }
+ 
+    .view-attendance select#person_select {
+        width: 80%;
+    }
+}
+ 
+/* Medium screens (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+ 
+    .title {
+        font-size: 2.5rem;
+    }
+ 
+    .face-text {
+        font-size: 3.5rem;
+        margin: 1.5rem 0;
+    }
+ 
+    .face-text span {
+        font-size: 1.8rem;
+    }
+ 
+    .get-started {
+        font-size: 1.8rem;
+        margin: 1.5rem 0;
+    }
+ 
+    .intro-text {
+        font-size: 2.5rem;
+    }
+ 
+    .register-step, .attendance-step, .view-step {
+        font-size: 1.8rem;
+    }
+ 
+    .logo-name-container {
+        flex-direction: column;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+ 
+    .company-logo {
+        margin-right: 0;
+        height: 90px;
+        width: 220px;
+    }
+ 
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+    }
+ 
+    .left-text {
+        max-width: 100%;
+        text-align: center;
+    }
+ 
+    .buttons {
+        padding: 3rem 0;
+        gap: 1.2rem;
+    }
+ 
+    button, .btn {
+        padding: 0.7rem 1.1rem;
+        font-size: 1.1rem;
+    }
+ 
+    .view-attendance .container {
+        padding: 1.5rem;
+    }
+ 
+    .view-attendance h1, .view-attendance h2 {
+        font-size: 2rem;
+    }
+ 
+    .view-attendance select#person_select {
+        width: 60%;
+    }
+}
+ 
+/* Large screens (769px to 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 2rem;
+    }
+ 
+    .title {
+        font-size: 3rem;
+    }
+ 
+    .face-text {
+        font-size: 4rem;
+        margin: 2rem;
+    }
+ 
+    .face-text span {
+        font-size: 2rem;
+    }
+ 
+    .get-started {
+        font-size: 2rem;
+        margin: 2rem;
+    }
+ 
+    .intro-text {
+        font-size: 2.8rem;
+    }
+ 
+    .register-step, .attendance-step, .view-step {
+        font-size: 2rem;
+    }
+ 
+    .logo-name-container {
+        flex-direction: row;
+        margin-bottom: -60px;
+        margin-top: -80px;
+    }
+ 
+    .company-logo {
+        margin-right: 20px;
+        height: 100px;
+        width: 240px;
+    }
+ 
+    .main-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+ 
+    .left-text {
+        max-width: 50%;
+        text-align: left;
+    }
+ 
+    .buttons {
+        padding: 4rem 0;
+        gap: 1.5rem;
+    }
+ 
+    button, .btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 1.2rem;
+    }
+ 
+    .view-attendance .container {
+        padding: 2rem;
+        max-width: 90%;
+    }
+ 
+    .view-attendance h1, .view-attendance h2 {
+        font-size: 2.3rem;
+    }
+ 
+    .view-attendance select#person_select {
+        width: 40%;
+    }
+}
+ 
+/* 1440px screens */
+@media (min-width: 1440px) and (max-width: 1440px) {
+    body {
+        min-height: 100vh;
+        margin: 0;
+    }
+ 
+    .container {
+        padding: 2.5rem;
+        max-width: 1200px;
+    }
+ 
+    .title {
+        font-size: 3.5rem;
+        margin: 1rem 0;
+    }
+ 
+    .face-text {
+        font-size: 5rem;
+        margin: 1.5rem 2rem;
+    }
+ 
+    .face-text span {
+        font-size: 2.2rem;
+    }
+ 
+    .get-started {
+        font-size: 2.2rem;
+        margin: 1.5rem 2rem;
+    }
+ 
+    .intro-text {
+        font-size: 3rem;
+        margin: 1rem 0;
+    }
+ 
+    .register-step, .attendance-step, .view-step {
+        font-size: 2rem;
+        margin: 0.5rem 0;
+    }
+ 
+    .logo-name-container {
+        flex-direction: row;
+        margin: 0;
+    }
+ 
+    .company-logo {
+        margin-right: 40px;
+        height: 115px;
+        width: 300px;
+    }
+ 
+    .main-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0;
+    }
+ 
+    .left-text {
+        max-width: 50%;
+        text-align: left;
+    }
+ 
+    .buttons {
+        padding: 2rem 0;
+        gap: 1.5rem;
+        margin-bottom: 0;
+    }
+ 
+    button, .btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 1.2rem;
+    }
+ 
+    .view-attendance .container {
+        padding: 2.5rem;
+        margin: 2rem auto 0;
+        max-width: 800px;
+    }
+ 
+    .view-attendance h1, .view-attendance h2 {
+        font-size: 2.5rem;
+        margin: 0.5rem 0;
+    }
+ 
+    .view-attendance select#person_select {
+        width: 30%;
+    }
+}
