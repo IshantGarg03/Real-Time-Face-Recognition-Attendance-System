@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ART Face Recognition System</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="UTF-8">
+  <title>Face Recognition Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
-  <div class="container center">
-    <h1>ART Face Recognition Attendance System</h1>
-    <div class="button-group">
-      <a href="{{ url_for('register') }}" class="btn">Register Face</a>
-      <a href="{{ url_for('attendance') }}" class="btn">Mark Attendance</a>
+ 
+  <div class="container">
+       <div class="container logo-name-container">
+    <img src="{{ url_for('static', filename='Art-logo.jpg') }}" alt="Company Logo" class="company-logo"> 
+      </div> 
+    <h1 class="title">Face-Recognition Automated Attendance System</h1>
+
+    <div class="main-content">
+      <div class="left-text"> 
+        <h2 class="face-text">FACE <span>RECOGNITION</span></h2>
+        <p class="get-started">Let's get Started</p>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <form action="{{ url_for('register') }}" method="get" style="display: inline;">
+        <button type="submit" class="btn">Click to register a new employee</button>
+      </form>
+      <form action="{{ url_for('attendance') }}" method="get" style="display: inline;">
+        <button type="submit" class="btn">Take Attendance</button> 
+      </form>
+      <form action="{{ url_for('view_attendance') }}" method="get" style="display: inline;">
+        <button type="submit" class="btn">View Attendance</button>
+      </form>
+      <form action="{{ url_for('help_page') }}" method="get" style="display: inline;">
+        <button type="submit" class="btn">Get Help</button>
+      </form> 
     </div>
   </div>
 </body>
-</html> 
+</html>  
