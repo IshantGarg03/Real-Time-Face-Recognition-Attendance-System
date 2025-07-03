@@ -141,7 +141,7 @@ def write_to_gsheet(name, action, timestamp, location="Office"):
             return
 
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name("Attendance.json", scope)
+        creds = ServiceAccountCredentials.from_json_keyfile_name("Excel_Name.json", scope)
         client = gspread.authorize(creds)
         sheet = client.open("Attendance").sheet1
         sheet.append_row([name, action, timestamp, location])
