@@ -29,7 +29,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = "Write Secret Key Here" 
+app.secret_key = os.getenv('FLASK_SECRET_KEY') 
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 if face_cascade.empty():
